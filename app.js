@@ -3,9 +3,9 @@
 // ─── State ────────────────────────────────────────────
 const app = {
   // timer
-  duration:    20 * 60,   // seconds
+  duration:    45 * 60,   // seconds
   interval:    0,          // seconds between pings (0 = off)
-  remaining:   20 * 60,
+  remaining:   45 * 60,
   status:      'idle',     // 'idle' | 'running' | 'paused'
   startedAt:   null,       // Date.now() when segment started
   elapsed:     0,          // seconds accumulated before this segment
