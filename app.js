@@ -552,11 +552,15 @@ function init() {
     btn.addEventListener('click', () => showView(btn.dataset.view))
   );
 
-  document.getElementById('playBtn').addEventListener('click', () => {
-    // Unlock AudioContext on first gesture
+  function handlePlayTap() {
     if (_actx?.state === 'suspended') _actx.resume();
     if (app.status === 'running') pauseTimer(); else startTimer();
-  });
+  }
+
+  document.getElementById('playBtn').addEventListener('click', handlePlayTap);
+
+  // Tapping the ring face (where "tap to begin" label sits) also starts/pauses
+  document.querySelector('.ring-wrap').addEventListener('click', handlePlayTap);
 
   document.getElementById('resetBtn').addEventListener('click', resetTimer);
 

@@ -128,6 +128,7 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   padding: 28px 0 20px;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .ring-svg {
