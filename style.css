@@ -562,5 +562,10 @@ html, body {
   pointer-events: none;
 }
 
+/* ─── Prevent 300ms ghost-click on mobile ────────────── */
+.ring-wrap, .ctrl-btn, .chip, .nav-btn, .hdr-btn, .modal-close {
+  touch-action: manipulation;
+}
+
 /* ─── Utilities ──────────────────────────────────────── */
 .hidden { display: none !important; }

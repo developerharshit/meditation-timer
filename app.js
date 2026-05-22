@@ -552,7 +552,15 @@ function init() {
     btn.addEventListener('click', () => showView(btn.dataset.view))
   );
 
-  function handlePlayTap() {
+  // Debounce: mobile browsers can fire the click event twice (300ms ghost tap,
+  // or touchend + click in quick succession). Block re-entry for 400ms.
+  let _tapBlocked = false;
+  function handlePlayTap(e) {
+    e.stopPropagation();
+    if (_tapBlocked) return;
+    _tapBlocked = true;
+    setTimeout(() => { _tapBlocked = false; }, 400);
+
     if (_actx?.state === 'suspended') _actx.resume();
     if (app.status === 'running') pauseTimer(); else startTimer();
   }
