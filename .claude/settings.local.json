@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "WebSearch",
+      "WebFetch(domain:mobbin.com)",
+      "WebFetch(domain:www.figma.com)",
+      "WebFetch(domain:liztran.fyi)",
+      "WebFetch(domain:www.itsnicethat.com)",
+      "WebFetch(domain:www.designrush.com)",
+      "WebFetch(domain:www.kimp.io)",
+      "WebFetch(domain:uisources.com)",
+      "WebFetch(domain:raw.studio)",
+      "WebFetch(domain:www.printmag.com)",
+      "WebFetch(domain:designcompass.org)",
+      "WebFetch(domain:ixd.prattsi.org)"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "Meditate",
+  "short_name": "Meditate",
+  "description": "Mindful meditation timer with interval bells and session tracking",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07070f",
+  "theme_color": "#07070f",
+  "categories": ["health", "lifestyle"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

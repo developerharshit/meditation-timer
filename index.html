@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#07070f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Meditate">
+  <title>Meditate</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ── TIMER VIEW ─────────────────────────────────── -->
+  <section id="v-timer" class="view active">
+    <header class="view-header">
+      <span class="app-name">Meditate</span>
+    </header>
+
+    <div class="ring-wrap">
+      <svg class="ring-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+        <circle class="ring-track" cx="120" cy="120" r="108"/>
+        <circle class="ring-fill"  cx="120" cy="120" r="108" id="ringFill"/>
+      </svg>
+      <div class="ring-center">
+        <div class="time-display" id="timeDisplay">20:00</div>
+        <div class="time-sub"    id="timeSub">tap to begin</div>
+      </div>
+    </div>
+
+    <div class="settings-block" id="settingsBlock">
+      <div class="setting-row">
+        <span class="setting-label">Duration</span>
+        <div class="chips" id="durationChips">
+          <button class="chip" data-min="5">5m</button>
+          <button class="chip" data-min="10">10m</button>
+          <button class="chip active" data-min="20">20m</button>
+          <button class="chip" data-min="30">30m</button>
+          <button class="chip" data-min="45">45m</button>
+          <button class="chip" data-min="60">60m</button>
+          <button class="chip chip-custom" data-min="custom">···</button>
+        </div>
+        <input id="customMin" class="custom-input hidden" type="number"
+               min="1" max="480" placeholder="minutes">
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">Interval bell</span>
+        <div class="chips" id="intervalChips">
+          <button class="chip active" data-sec="0">off</button>
+          <button class="chip" data-sec="300">5m</button>
+          <button class="chip" data-sec="600">10m</button>
+          <button class="chip" data-sec="900">15m</button>
+          <button class="chip" data-sec="1200">20m</button>
+          <button class="chip" data-sec="1800">30m</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl-btn ctrl-sec" id="resetBtn" disabled title="Reset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="1 4 1 10 7 10"/>
+          <path d="M3.51 15a9 9 0 1 0 .49-3.51"/>
+        </svg>
+      </button>
+
+      <button class="ctrl-btn ctrl-primary" id="playBtn" title="Start / Pause">
+        <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="6 3 20 12 6 21 6 3"/>
+        </svg>
+        <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" class="hidden">
+          <rect x="6"  y="4" width="4" height="16" rx="1"/>
+          <rect x="14" y="4" width="4" height="16" rx="1"/>
+        </svg>
+      </button>
+
+      <button class="ctrl-btn ctrl-sec" id="muteBtn" title="Toggle sound">
+        <svg id="iconSoundOn" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <svg id="iconSoundOff" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="23" y1="9" x2="17" y2="15"/>
+          <line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── HISTORY VIEW ───────────────────────────────── -->
+  <section id="v-history" class="view">
+    <header class="view-header">
+      <span class="app-name">History</span>
+      <div class="header-actions">
+        <button class="hdr-btn" id="exportBtn" title="Export data">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
+        <button class="hdr-btn" id="importBtn" title="Import data">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </button>
+        <input type="file" id="importFile" accept=".json" class="hidden">
+      </div>
+    </header>
+    <div id="historyList" class="scroll-body"></div>
+  </section>
+
+  <!-- ── STATS VIEW ─────────────────────────────────── -->
+  <section id="v-stats" class="view">
+    <header class="view-header">
+      <span class="app-name">Stats</span>
+    </header>
+    <div class="scroll-body">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="sCurStreak">0</div>
+          <div class="stat-name">Current streak</div>
+          <div class="stat-unit">days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="sLngStreak">0</div>
+          <div class="stat-name">Longest streak</div>
+          <div class="stat-unit">days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="sTotalSess">0</div>
+          <div class="stat-name">Sessions</div>
+          <div class="stat-unit">total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="sTotalHrs">0</div>
+          <div class="stat-name">Total time</div>
+          <div class="stat-unit">hours</div>
+        </div>
+      </div>
+
+      <div class="heatmap-card">
+        <div class="setting-label" style="margin-bottom:10px">Last 16 weeks</div>
+        <div class="heatmap-months" id="heatmapMonths"></div>
+        <div class="heatmap-days">
+          <div class="day-labels">
+            <span></span><span>M</span><span></span>
+            <span>W</span><span></span><span>F</span><span></span>
+          </div>
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+        <div class="heatmap-legend">
+          <span>less</span>
+          <div class="leg-cell" data-l="0"></div>
+          <div class="leg-cell" data-l="1"></div>
+          <div class="leg-cell" data-l="2"></div>
+          <div class="leg-cell" data-l="3"></div>
+          <div class="leg-cell" data-l="4"></div>
+          <span>more</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BOTTOM NAV ─────────────────────────────────── -->
+  <nav id="bottomNav">
+    <button class="nav-btn active" data-view="timer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span>Timer</span>
+    </button>
+    <button class="nav-btn" data-view="history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+      <span>History</span>
+    </button>
+    <button class="nav-btn" data-view="stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6"  y1="20" x2="6"  y2="14"/>
+      </svg>
+      <span>Stats</span>
+    </button>
+  </nav>
+
+  <!-- ── COMPLETION MODAL ───────────────────────────── -->
+  <div class="modal-backdrop hidden" id="modalBackdrop"></div>
+  <div class="modal hidden" id="modal">
+    <div class="modal-icon">🔔</div>
+    <div class="modal-title">Session complete</div>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-streak hidden" id="modalStreak"></div>
+    <button class="modal-close" id="modalClose">Done</button>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
