@@ -1,28 +1,131 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Background -->
-  <rect width="512" height="512" rx="110" fill="#07070f"/>
+  <defs>
 
-  <!-- Outer glow rings -->
-  <circle cx="256" cy="290" r="180" fill="none" stroke="#8b7cf8" stroke-width="4" opacity="0.12"/>
-  <circle cx="256" cy="290" r="145" fill="none" stroke="#8b7cf8" stroke-width="4" opacity="0.22"/>
-  <circle cx="256" cy="290" r="112" fill="none" stroke="#8b7cf8" stroke-width="4" opacity="0.36"/>
+    <!-- ── Backgrounds ──────────────────────────────── -->
+    <radialGradient id="bg" cx="48%" cy="42%" r="68%">
+      <stop offset="0%"   stop-color="#22272F"/>
+      <stop offset="100%" stop-color="#0C0E11"/>
+    </radialGradient>
 
-  <!-- Head -->
-  <circle cx="256" cy="155" r="42" fill="#8b7cf8"/>
+    <!-- ── Figure fills — neumorphic depth ─────────── -->
+    <!-- Main body / head: light hits top-left, shadow bottom-right -->
+    <linearGradient id="figBody" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%"   stop-color="#2D5032"/>
+      <stop offset="50%"  stop-color="#1C3621"/>
+      <stop offset="100%" stop-color="#0F1C12"/>
+    </linearGradient>
+    <!-- Arm / legs — slightly flatter -->
+    <linearGradient id="figFlat" x1="10%" y1="5%" x2="90%" y2="95%">
+      <stop offset="0%"   stop-color="#253C29"/>
+      <stop offset="100%" stop-color="#0D1810"/>
+    </linearGradient>
 
-  <!-- Shoulders / upper body -->
-  <ellipse cx="256" cy="268" rx="72" ry="52" fill="#8b7cf8"/>
+    <!-- ── Chakra gem ───────────────────────────────── -->
+    <radialGradient id="chakraFill" cx="38%" cy="32%" r="68%">
+      <stop offset="0%"   stop-color="#FFFCF5"/>
+      <stop offset="35%"  stop-color="#F2C070"/>
+      <stop offset="100%" stop-color="#B87C38"/>
+    </radialGradient>
 
-  <!-- Left arm resting -->
-  <ellipse cx="168" cy="296" rx="58" ry="20" fill="#7060e0"
+    <!-- ── Glow filters ─────────────────────────────── -->
+
+    <!-- Soft double-blur for the ripple ring group -->
+    <filter id="ringGlow" x="-6%" y="-6%" width="112%" height="112%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Strong warm glow for the chakra gem -->
+    <filter id="chakraGlow" x="-180%" y="-180%" width="460%" height="460%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="b"/>
+      <feFlood flood-color="#F5C060" flood-opacity="0.9" result="c"/>
+      <feComposite in="c" in2="b" operator="in" result="g"/>
+      <feMerge>
+        <feMergeNode in="g"/>
+        <feMergeNode in="g"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Gentle gold glow for figure edges when stacked -->
+    <filter id="edgeGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="b"/>
+      <feFlood flood-color="#DDA77B" flood-opacity="0.45" result="c"/>
+      <feComposite in="c" in2="b" operator="in" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+  </defs>
+
+  <!-- ── Background ───────────────────────────────────── -->
+  <rect width="512" height="512" rx="92" fill="url(#bg)"/>
+
+  <!-- ── Perimeter champagne gold rim ─────────────────── -->
+  <rect width="512" height="512" rx="92" fill="none"
+        stroke="#DDA77B" stroke-width="1.5" stroke-opacity="0.30"/>
+
+  <!-- ── Concentric ripple rings ───────────────────────
+       Warmest champagne at centre → deepest forest green at edge     -->
+  <g filter="url(#ringGlow)">
+    <circle cx="256" cy="290" r="56"  fill="none" stroke="#DDA77B" stroke-width="1.6" opacity="0.68"/>
+    <circle cx="256" cy="290" r="76"  fill="none" stroke="#CFA570" stroke-width="1.5" opacity="0.60"/>
+    <circle cx="256" cy="290" r="98"  fill="none" stroke="#A88254" stroke-width="1.4" opacity="0.52"/>
+    <circle cx="256" cy="290" r="120" fill="none" stroke="#79834A" stroke-width="1.3" opacity="0.44"/>
+    <circle cx="256" cy="290" r="143" fill="none" stroke="#476548" stroke-width="1.2" opacity="0.37"/>
+    <circle cx="256" cy="290" r="166" fill="none" stroke="#2C4E32" stroke-width="1.1" opacity="0.30"/>
+    <circle cx="256" cy="290" r="189" fill="none" stroke="#1B3820" stroke-width="1.0" opacity="0.23"/>
+  </g>
+
+  <!-- ── Figure (back to front) ───────────────────────── -->
+
+  <!-- Folded-legs base — broadest, lowest layer -->
+  <ellipse cx="256" cy="340" rx="108" ry="32"
+           fill="url(#figFlat)"
+           stroke="#DDA77B" stroke-width="1.1" stroke-opacity="0.42"
+           filter="url(#edgeGlow)"/>
+  <!-- Subtle top-edge specular on legs -->
+  <ellipse cx="246" cy="325" rx="52" ry="9" fill="white" opacity="0.028"/>
+
+  <!-- Left arm -->
+  <ellipse cx="168" cy="296" rx="58" ry="20"
+           fill="url(#figFlat)"
+           stroke="#DDA77B" stroke-width="1" stroke-opacity="0.38"
            transform="rotate(-12 168 296)"/>
-  <!-- Right arm resting -->
-  <ellipse cx="344" cy="296" rx="58" ry="20" fill="#7060e0"
+
+  <!-- Right arm -->
+  <ellipse cx="344" cy="296" rx="58" ry="20"
+           fill="url(#figFlat)"
+           stroke="#DDA77B" stroke-width="1" stroke-opacity="0.38"
            transform="rotate(12 344 296)"/>
 
-  <!-- Folded legs base -->
-  <ellipse cx="256" cy="340" rx="108" ry="32" fill="#6347d4" opacity="0.9"/>
+  <!-- Body / torso -->
+  <ellipse cx="256" cy="268" rx="72" ry="52"
+           fill="url(#figBody)"
+           stroke="#DDA77B" stroke-width="1.3" stroke-opacity="0.50"
+           filter="url(#edgeGlow)"/>
+  <!-- Body specular (upper-left catchlight) -->
+  <ellipse cx="240" cy="246" rx="32" ry="21" fill="white" opacity="0.032"/>
 
-  <!-- Hands in lap (mudra circle) -->
-  <circle cx="256" cy="308" r="22" fill="none" stroke="#b0a0ff" stroke-width="5" opacity="0.7"/>
+  <!-- Head -->
+  <circle cx="256" cy="155" r="42"
+          fill="url(#figBody)"
+          stroke="#DDA77B" stroke-width="1.3" stroke-opacity="0.50"
+          filter="url(#edgeGlow)"/>
+  <!-- Head specular -->
+  <ellipse cx="244" cy="141" rx="17" ry="13" fill="white" opacity="0.038"/>
+
+  <!-- ── Mudra / chakra focal point ───────────────────── -->
+  <!-- Outer filigree ring -->
+  <circle cx="256" cy="308" r="23"
+          fill="none" stroke="#DDA77B" stroke-width="1.0" stroke-opacity="0.38"/>
+  <!-- Inner ring -->
+  <circle cx="256" cy="308" r="15"
+          fill="none" stroke="#DDA77B" stroke-width="1.3" stroke-opacity="0.55"/>
+  <!-- Glowing topaz gem -->
+  <circle cx="256" cy="308" r="8"
+          fill="url(#chakraFill)"
+          filter="url(#chakraGlow)"/>
+  <!-- Bright specular on gem -->
+  <circle cx="253" cy="305" r="2.5" fill="white" opacity="0.92"/>
+
 </svg>
