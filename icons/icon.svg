@@ -1,131 +1,198 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <defs>
+<defs>
 
-    <!-- ── Backgrounds ──────────────────────────────── -->
-    <radialGradient id="bg" cx="48%" cy="42%" r="68%">
-      <stop offset="0%"   stop-color="#22272F"/>
-      <stop offset="100%" stop-color="#0C0E11"/>
-    </radialGradient>
+  <!-- Rounded-square clip so all content stays within icon bounds -->
+  <clipPath id="iconShape">
+    <rect width="512" height="512" rx="92"/>
+  </clipPath>
 
-    <!-- ── Figure fills — neumorphic depth ─────────── -->
-    <!-- Main body / head: light hits top-left, shadow bottom-right -->
-    <linearGradient id="figBody" x1="15%" y1="10%" x2="85%" y2="90%">
-      <stop offset="0%"   stop-color="#2D5032"/>
-      <stop offset="50%"  stop-color="#1C3621"/>
-      <stop offset="100%" stop-color="#0F1C12"/>
-    </linearGradient>
-    <!-- Arm / legs — slightly flatter -->
-    <linearGradient id="figFlat" x1="10%" y1="5%" x2="90%" y2="95%">
-      <stop offset="0%"   stop-color="#253C29"/>
-      <stop offset="100%" stop-color="#0D1810"/>
-    </linearGradient>
+  <!-- ── Gradients ──────────────────────────────────── -->
 
-    <!-- ── Chakra gem ───────────────────────────────── -->
-    <radialGradient id="chakraFill" cx="38%" cy="32%" r="68%">
-      <stop offset="0%"   stop-color="#FFFCF5"/>
-      <stop offset="35%"  stop-color="#F2C070"/>
-      <stop offset="100%" stop-color="#B87C38"/>
-    </radialGradient>
+  <!-- Background: deep charcoal, darker at edges -->
+  <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
+    <stop offset="0%"   stop-color="#161A20"/>
+    <stop offset="62%"  stop-color="#0E1116"/>
+    <stop offset="100%" stop-color="#070809"/>
+  </radialGradient>
 
-    <!-- ── Glow filters ─────────────────────────────── -->
+  <!-- Bronze bowl rim: warm metallic, upper-left highlight -->
+  <radialGradient id="bronzeRim" cx="36%" cy="30%" r="72%">
+    <stop offset="0%"   stop-color="#EAC454"/>
+    <stop offset="18%"  stop-color="#C49828"/>
+    <stop offset="44%"  stop-color="#8C6518"/>
+    <stop offset="76%"  stop-color="#5A4010"/>
+    <stop offset="100%" stop-color="#3C2A08"/>
+  </radialGradient>
 
-    <!-- Soft double-blur for the ripple ring group -->
-    <filter id="ringGlow" x="-6%" y="-6%" width="112%" height="112%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
+  <!-- Bowl interior warm-amber illumination overlay -->
+  <radialGradient id="bowlGlow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%"   stop-color="#F8C840" stop-opacity="0.28"/>
+    <stop offset="32%"  stop-color="#F0A820" stop-opacity="0.10"/>
+    <stop offset="68%"  stop-color="#C07818" stop-opacity="0.03"/>
+    <stop offset="100%" stop-color="#904010" stop-opacity="0"/>
+  </radialGradient>
 
-    <!-- Strong warm glow for the chakra gem -->
-    <filter id="chakraGlow" x="-180%" y="-180%" width="460%" height="460%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="b"/>
-      <feFlood flood-color="#F5C060" flood-opacity="0.9" result="c"/>
-      <feComposite in="c" in2="b" operator="in" result="g"/>
-      <feMerge>
-        <feMergeNode in="g"/>
-        <feMergeNode in="g"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
+  <!-- Central jade orb surface -->
+  <radialGradient id="jadeOrb" cx="32%" cy="28%" r="72%">
+    <stop offset="0%"   stop-color="#D8FFF2"/>
+    <stop offset="18%"  stop-color="#62D4BA"/>
+    <stop offset="52%"  stop-color="#1C8262"/>
+    <stop offset="100%" stop-color="#083828"/>
+  </radialGradient>
 
-    <!-- Gentle gold glow for figure edges when stacked -->
-    <filter id="edgeGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="b"/>
-      <feFlood flood-color="#DDA77B" flood-opacity="0.45" result="c"/>
-      <feComposite in="c" in2="b" operator="in" result="g"/>
-      <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
+  <!-- Warm amber topaz core inside the jade orb -->
+  <radialGradient id="amberCore" cx="50%" cy="50%" r="50%">
+    <stop offset="0%"   stop-color="#FFFFFF"/>
+    <stop offset="22%"  stop-color="#FFF2A8"/>
+    <stop offset="58%"  stop-color="#F5A828"/>
+    <stop offset="100%" stop-color="#C05010" stop-opacity="0"/>
+  </radialGradient>
 
-  </defs>
+  <!-- ── Filters ────────────────────────────────────── -->
 
-  <!-- ── Background ───────────────────────────────────── -->
-  <rect width="512" height="512" rx="92" fill="url(#bg)"/>
+  <!-- Bowl drop shadow (rendered behind the bronze rim) -->
+  <filter id="bowlShadow" x="-12%" y="-12%" width="124%" height="124%">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="9"/>
+  </filter>
 
-  <!-- ── Perimeter champagne gold rim ─────────────────── -->
-  <rect width="512" height="512" rx="92" fill="none"
-        stroke="#DDA77B" stroke-width="1.5" stroke-opacity="0.30"/>
+  <!-- Micro-etch glow for ring boundary lines -->
+  <filter id="etchGlow" x="-4%" y="-4%" width="108%" height="108%">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="1.1" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
 
-  <!-- ── Concentric ripple rings ───────────────────────
-       Warmest champagne at centre → deepest forest green at edge     -->
-  <g filter="url(#ringGlow)">
-    <circle cx="256" cy="290" r="56"  fill="none" stroke="#DDA77B" stroke-width="1.6" opacity="0.68"/>
-    <circle cx="256" cy="290" r="76"  fill="none" stroke="#CFA570" stroke-width="1.5" opacity="0.60"/>
-    <circle cx="256" cy="290" r="98"  fill="none" stroke="#A88254" stroke-width="1.4" opacity="0.52"/>
-    <circle cx="256" cy="290" r="120" fill="none" stroke="#79834A" stroke-width="1.3" opacity="0.44"/>
-    <circle cx="256" cy="290" r="143" fill="none" stroke="#476548" stroke-width="1.2" opacity="0.37"/>
-    <circle cx="256" cy="290" r="166" fill="none" stroke="#2C4E32" stroke-width="1.1" opacity="0.30"/>
-    <circle cx="256" cy="290" r="189" fill="none" stroke="#1B3820" stroke-width="1.0" opacity="0.23"/>
+  <!-- Central jade orb: multi-layer warm amber glow -->
+  <filter id="orbGlow" x="-280%" y="-280%" width="660%" height="660%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="14" result="b1"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="5"  result="b2"/>
+    <feFlood flood-color="#F5B428" flood-opacity="0.80" result="c1"/>
+    <feFlood flood-color="#FFFCE0" flood-opacity="0.60" result="c2"/>
+    <feComposite in="c1" in2="b1" operator="in" result="g1"/>
+    <feComposite in="c2" in2="b2" operator="in" result="g2"/>
+    <feMerge>
+      <feMergeNode in="g1"/>
+      <feMergeNode in="g1"/>
+      <feMergeNode in="g2"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+
+</defs>
+
+<!-- ═══ Everything inside the rounded-square icon shape ═══ -->
+<g clip-path="url(#iconShape)">
+
+  <!-- ── Background: dark charcoal-marble ──────────────── -->
+  <rect width="512" height="512" fill="url(#bgGrad)"/>
+
+  <!-- Marble veining: barely-visible gold and forest-green paths -->
+  <!-- Gold veins -->
+  <path d="M 14,92  Q 108,60 172,126 Q 255,198 370,152 Q 444,120 504,162"
+        fill="none" stroke="#DDA77B" stroke-width="1.5"
+        stroke-linecap="round" stroke-opacity="0.095"/>
+  <path d="M 40,26  Q 94,84 142,72  Q 208,56 274,110 Q 314,138 384,106"
+        fill="none" stroke="#DDA77B" stroke-width="1.0"
+        stroke-linecap="round" stroke-opacity="0.065"/>
+  <path d="M 8,320  Q 84,284 158,322 Q 252,372 342,304 Q 428,246 510,288"
+        fill="none" stroke="#DDA77B" stroke-width="1.2"
+        stroke-linecap="round" stroke-opacity="0.075"/>
+  <!-- Green veins -->
+  <path d="M 24,208 Q 98,178 166,220 Q 252,278 354,243 Q 432,216 514,254"
+        fill="none" stroke="#2A5E38" stroke-width="1.0"
+        stroke-linecap="round" stroke-opacity="0.065"/>
+  <path d="M 408,24 Q 464,90 494,168 Q 514,248 492,368"
+        fill="none" stroke="#1E4A2C" stroke-width="1.2"
+        stroke-linecap="round" stroke-opacity="0.055"/>
+
+  <!-- ── Singing Bowl (top-down view) ──────────────────── -->
+
+  <!-- Soft drop shadow behind the bowl -->
+  <circle cx="256" cy="264" r="205"
+          fill="black" opacity="0.50" filter="url(#bowlShadow)"/>
+
+  <!-- Bronze rim (r = 200). Interior will be layered over this. -->
+  <circle cx="256" cy="256" r="200" fill="url(#bronzeRim)"/>
+
+  <!-- Rim: inner shadow edge (deepens the groove between rim and floor) -->
+  <circle cx="256" cy="256" r="186" fill="none"
+          stroke="#000000" stroke-width="9" stroke-opacity="0.50"/>
+
+  <!-- Rim: interior lip highlight (bright inner edge of the bronze) -->
+  <circle cx="256" cy="256" r="185" fill="none"
+          stroke="#F2D472" stroke-width="1.2" stroke-opacity="0.52"/>
+
+  <!-- ── Concentric ring layers (drawn outer → inner) ──────
+       Each filled circle occludes its predecessor. The visible
+       ring between radius Rₙ and Rₙ₋₁ carries the colour of Rₙ.
+
+       Visible zones (outer → inner):
+         Jade  169–183  #0B1D13
+         Gold  160–169  #7C5614
+         Jade  143–160  #0F2A1A
+         Gold  134–143  #9C7222
+         Jade  114–134  #153522
+         Gold  105–114  #BC8C2A
+         Jade   83–105  #1A452A
+         Gold   74–83   #D6A232
+         Jade   52–74   #215238
+         Gold   43–52   #ECBA42
+         Jade   26–43   #286248
+         Gold   17–26   #FAC852   (inner halo)
+         (orb)   0–17   covered
+  ──────────────────────────────────────────────────────── -->
+  <circle cx="256" cy="256" r="183" fill="#0B1D13"/>
+  <circle cx="256" cy="256" r="169" fill="#7C5614"/>
+  <circle cx="256" cy="256" r="160" fill="#0F2A1A"/>
+  <circle cx="256" cy="256" r="143" fill="#9C7222"/>
+  <circle cx="256" cy="256" r="134" fill="#153522"/>
+  <circle cx="256" cy="256" r="114" fill="#BC8C2A"/>
+  <circle cx="256" cy="256" r="105" fill="#1A452A"/>
+  <circle cx="256" cy="256" r="83"  fill="#D6A232"/>
+  <circle cx="256" cy="256" r="74"  fill="#215238"/>
+  <circle cx="256" cy="256" r="52"  fill="#ECBA42"/>
+  <circle cx="256" cy="256" r="43"  fill="#286248"/>
+  <circle cx="256" cy="256" r="26"  fill="#FAC852"/>
+  <circle cx="256" cy="256" r="17"  fill="#2E7258"/>
+
+  <!-- ── Ring edge etching ──────────────────────────────
+       0.7 px glowing gold lines at every ring boundary give
+       the micro-etched, filigree-inlaid look.              -->
+  <g fill="none" stroke="#E8C870" stroke-width="0.7"
+     stroke-opacity="0.58" filter="url(#etchGlow)">
+    <circle cx="256" cy="256" r="169"/>
+    <circle cx="256" cy="256" r="160"/>
+    <circle cx="256" cy="256" r="143"/>
+    <circle cx="256" cy="256" r="134"/>
+    <circle cx="256" cy="256" r="114"/>
+    <circle cx="256" cy="256" r="105"/>
+    <circle cx="256" cy="256" r="83"/>
+    <circle cx="256" cy="256" r="74"/>
+    <circle cx="256" cy="256" r="52"/>
+    <circle cx="256" cy="256" r="43"/>
+    <circle cx="256" cy="256" r="26"/>
+    <circle cx="256" cy="256" r="17"/>
   </g>
 
-  <!-- ── Figure (back to front) ───────────────────────── -->
+  <!-- ── Bowl ambient glow (warm amber diffusion from core) -->
+  <circle cx="256" cy="256" r="183" fill="url(#bowlGlow)"/>
 
-  <!-- Folded-legs base — broadest, lowest layer -->
-  <ellipse cx="256" cy="340" rx="108" ry="32"
-           fill="url(#figFlat)"
-           stroke="#DDA77B" stroke-width="1.1" stroke-opacity="0.42"
-           filter="url(#edgeGlow)"/>
-  <!-- Subtle top-edge specular on legs -->
-  <ellipse cx="246" cy="325" rx="52" ry="9" fill="white" opacity="0.028"/>
+  <!-- ── Central jade orb with amber topaz core ─────────── -->
+  <!-- Orb glow aura (wider, blurred warm circle) -->
+  <circle cx="256" cy="256" r="19"
+          fill="#F0C038" opacity="0.85" filter="url(#orbGlow)"/>
+  <!-- Jade orb surface -->
+  <circle cx="256" cy="256" r="17" fill="url(#jadeOrb)"/>
+  <!-- Warm amber core -->
+  <circle cx="256" cy="256" r="9"  fill="url(#amberCore)"/>
+  <!-- Specular catchlight -->
+  <ellipse cx="252" cy="251" rx="3.5" ry="2.5"
+           fill="white" opacity="0.90"/>
 
-  <!-- Left arm -->
-  <ellipse cx="168" cy="296" rx="58" ry="20"
-           fill="url(#figFlat)"
-           stroke="#DDA77B" stroke-width="1" stroke-opacity="0.38"
-           transform="rotate(-12 168 296)"/>
+</g><!-- end clip -->
 
-  <!-- Right arm -->
-  <ellipse cx="344" cy="296" rx="58" ry="20"
-           fill="url(#figFlat)"
-           stroke="#DDA77B" stroke-width="1" stroke-opacity="0.38"
-           transform="rotate(12 344 296)"/>
-
-  <!-- Body / torso -->
-  <ellipse cx="256" cy="268" rx="72" ry="52"
-           fill="url(#figBody)"
-           stroke="#DDA77B" stroke-width="1.3" stroke-opacity="0.50"
-           filter="url(#edgeGlow)"/>
-  <!-- Body specular (upper-left catchlight) -->
-  <ellipse cx="240" cy="246" rx="32" ry="21" fill="white" opacity="0.032"/>
-
-  <!-- Head -->
-  <circle cx="256" cy="155" r="42"
-          fill="url(#figBody)"
-          stroke="#DDA77B" stroke-width="1.3" stroke-opacity="0.50"
-          filter="url(#edgeGlow)"/>
-  <!-- Head specular -->
-  <ellipse cx="244" cy="141" rx="17" ry="13" fill="white" opacity="0.038"/>
-
-  <!-- ── Mudra / chakra focal point ───────────────────── -->
-  <!-- Outer filigree ring -->
-  <circle cx="256" cy="308" r="23"
-          fill="none" stroke="#DDA77B" stroke-width="1.0" stroke-opacity="0.38"/>
-  <!-- Inner ring -->
-  <circle cx="256" cy="308" r="15"
-          fill="none" stroke="#DDA77B" stroke-width="1.3" stroke-opacity="0.55"/>
-  <!-- Glowing topaz gem -->
-  <circle cx="256" cy="308" r="8"
-          fill="url(#chakraFill)"
-          filter="url(#chakraGlow)"/>
-  <!-- Bright specular on gem -->
-  <circle cx="253" cy="305" r="2.5" fill="white" opacity="0.92"/>
+<!-- ── Perimeter champagne gold rim highlight ─────────────
+     Drawn outside the clip so it sits precisely on the edge. -->
+<rect width="512" height="512" rx="92" fill="none"
+      stroke="#DDA77B" stroke-width="1.5" stroke-opacity="0.32"/>
 
 </svg>
