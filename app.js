@@ -6,10 +6,15 @@ const app = {
   duration:    45 * 60,   // seconds
   interval:    0,          // seconds between pings (0 = off)
   remaining:   45 * 60,
-  status:      'idle',     // 'idle' | 'running' | 'paused'
+  status:      'idle',     // 'idle' | 'countdown' | 'running' | 'paused'
   startedAt:   null,       // Date.now() when segment started
   elapsed:     0,          // seconds accumulated before this segment
   pingsFired:  0,          // interval pings fired this session
+
+  // countdown
+  cdVal:       5,          // countdown display number
+  cdTicker:    null,       // interval ref for countdown
+  cdEndTimer:  null,       // timeout ref for the 350 ms hold after countdown
 
   // ui
   muted:       false,
@@ -71,23 +76,76 @@ function unlockScreen() {
 }
 
 // ─── Timer core ───────────────────────────────────────
+
+/* ── Countdown (5 → 1 before meditation begins) ─────── */
 function startTimer() {
   if (app.status === 'idle') {
-    app.elapsed     = 0;
-    app.pingsFired  = 0;
-    app.remaining   = app.duration;
-    bell('start');
-  } else {
-    // resuming from pause
+    // kick off the 5-second get-ready countdown
+    app.cdVal    = 5;
+    app.status   = 'countdown';
+    syncUI();                       // shows "5", sets teal class (doesn't touch offset)
+    // One single 5 s linear fill — avoids the drift of 5 chained 1 s transitions
+    const fill = document.getElementById('ringFill');
+    fill.style.transition = 'stroke-dashoffset 5s linear, stroke .5s ease, filter .5s ease';
+    fill.style.strokeDashoffset = '0';
+    app.cdTicker = setInterval(cdStep, 1000);
+  } else if (app.status === 'paused') {
+    // resume directly — no countdown needed
     bell('ping');
+    app.status    = 'running';
+    app.startedAt = Date.now();
+    lockScreen();
+    app.ticker = setInterval(tick, 500);
+    tick();
+    syncUI();
   }
+}
 
+function cdStep() {
+  app.cdVal--;
+  if (app.cdVal <= 0) {
+    clearInterval(app.cdTicker);
+    app.cdTicker = null;
+    // Ring just finished animating to 100% — hold for 350 ms so the
+    // complete circle is clearly visible before meditation begins.
+    app.cdEndTimer = setTimeout(beginMeditation, 350);
+  } else {
+    syncCountdown();
+  }
+}
+
+function cancelCountdown() {
+  clearInterval(app.cdTicker);
+  clearTimeout(app.cdEndTimer);
+  app.cdTicker  = null;
+  app.cdEndTimer = null;
+  app.status    = 'idle';
+  ringInstant(CIRC);               // snap ring back to empty without animation
+  syncUI();
+}
+
+function beginMeditation() {
+  ringInstant(CIRC);               // snap ring to empty then let meditation fill it
+  app.elapsed    = 0;
+  app.pingsFired = 0;
+  app.remaining  = app.duration;
+  bell('start');
   app.status    = 'running';
   app.startedAt = Date.now();
   lockScreen();
   app.ticker = setInterval(tick, 500);
   tick();
   syncUI();
+}
+
+/* ── Helpers ────────────────────────────────────────── */
+// Set stroke-dashoffset instantly (bypasses CSS transition for resets)
+function ringInstant(offset) {
+  const fill = document.getElementById('ringFill');
+  fill.style.transition = 'none';
+  fill.style.strokeDashoffset = offset;
+  void fill.offsetWidth;           // force reflow so transition is off for this frame
+  fill.style.transition = '';
 }
 
 function pauseTimer() {
@@ -101,12 +159,16 @@ function pauseTimer() {
 }
 
 function resetTimer() {
+  clearInterval(app.cdTicker);
+  clearTimeout(app.cdEndTimer);
   clearInterval(app.ticker);
+  app.cdTicker  = null;
   app.status    = 'idle';
   app.elapsed   = 0;
   app.startedAt = null;
   app.pingsFired = 0;
   app.remaining = app.duration;
+  ringInstant(CIRC);
   unlockScreen();
   syncUI();
 }
@@ -158,28 +220,34 @@ function updateRingDisplay() {
 }
 
 function syncUI() {
-  const running = app.status === 'running';
-  const active  = app.status !== 'idle';
+  const running   = app.status === 'running';
+  const active    = app.status !== 'idle';
+  const countdown = app.status === 'countdown';
 
-  // play / pause icons
-  document.getElementById('iconPlay').classList.toggle('hidden',  running);
-  document.getElementById('iconPause').classList.toggle('hidden', !running);
+  // play / pause icons — during countdown show pause (tap cancels)
+  document.getElementById('iconPlay').classList.toggle('hidden',  running || countdown);
+  document.getElementById('iconPause').classList.toggle('hidden', !running && !countdown);
 
   // reset
   document.getElementById('resetBtn').disabled = !active;
 
   // ring classes
   const fill = document.getElementById('ringFill');
-  fill.classList.toggle('running', running);
-  fill.classList.toggle('paused',  app.status === 'paused');
+  fill.classList.toggle('running',   running);
+  fill.classList.toggle('paused',    app.status === 'paused');
+  fill.classList.toggle('countdown', countdown);
 
-  // settings visibility
+  // settings hidden while active
   document.getElementById('settingsBlock').classList.toggle('hidden', active);
 
   // sub-label
   const sub = document.getElementById('timeSub');
-  if (!active) {
-    sub.textContent = 'tap to begin';
+  if (countdown) {
+    // countdown display handled by syncCountdown()
+    syncCountdown();
+    return;
+  } else if (!active) {
+    sub.textContent = 'Ready to begin';
     sub.className   = 'time-sub';
   } else if (running) {
     sub.textContent = 'meditating';
@@ -190,6 +258,22 @@ function syncUI() {
   }
 
   updateRingDisplay();
+}
+
+// Update the big number + label during countdown.
+// Ring fill is driven by the single 5 s CSS transition started in startTimer().
+function syncCountdown() {
+  const el  = document.getElementById('timeDisplay');
+  const sub = document.getElementById('timeSub');
+
+  el.textContent  = app.cdVal;
+  sub.textContent = 'starting in';
+  sub.className   = 'time-sub countdown';
+
+  // pop animation on each number
+  el.classList.remove('cd-pop');
+  void el.offsetWidth;
+  el.classList.add('cd-pop');
 }
 
 // ─── Ping ripple ──────────────────────────────────────
@@ -562,7 +646,9 @@ function init() {
     setTimeout(() => { _tapBlocked = false; }, 400);
 
     if (_actx?.state === 'suspended') _actx.resume();
-    if (app.status === 'running') pauseTimer(); else startTimer();
+    if      (app.status === 'running')   pauseTimer();
+    else if (app.status === 'countdown') cancelCountdown();
+    else                                 startTimer();
   }
 
   document.getElementById('playBtn').addEventListener('click', handlePlayTap);
